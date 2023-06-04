@@ -101,7 +101,7 @@ export default function Home() {
   const handleGenreChange = (e: any, result: any) => {
     e.preventDefault();
     getData(`with_genres=${result}`).then((resp) =>
-      setMovies(resp.data.results)
+      dispatch(setMovies(resp.data.results))
     );
   };
 
@@ -109,12 +109,14 @@ export default function Home() {
     <>
       <div className="container mx-auto py-8 shadow-lg ">
         <h1 className="font-bold mb-4 text-2xl text-center">Popular Movies</h1>
-        <div className="w-full  flex  space-x-12 items-end">
+        <div className="w-full  flex  space-x-12 items-end justify-center">
           <div>
             <FilterByCategory
               filter={filter}
               handleFilterChange={handleFilterChange}
             />
+          </div>
+          <div>
             <Genre genres={genres} handleGenreChange={handleGenreChange} />
           </div>
 
