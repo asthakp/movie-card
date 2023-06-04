@@ -10,6 +10,10 @@ export interface Movie {
 export default interface MovieInterface{
 
     movies:Array<Movie>
+    oriMovies:Array<Movie>
+    filter:string
+    page:number
+   
 }
 
 export interface MovieCardInterface {
@@ -18,4 +22,9 @@ export interface MovieCardInterface {
   rating: number;
   releaseYear: string;
   poster: string;
+}
+
+export interface AuthInterface{
+  isLoggedIn:boolean;
+  jwtToken:string
 }

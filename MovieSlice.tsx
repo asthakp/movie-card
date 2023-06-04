@@ -4,6 +4,8 @@ import MovieInterface from "./interface/global.interface";
 const initialState: MovieInterface = {
   movies: [],
   oriMovies: [],
+  filter: "",
+  page: 1,
 };
 
 const MovieSlice: any = createSlice({
@@ -22,24 +24,15 @@ const MovieSlice: any = createSlice({
       state.movies = filteredmovies;
     },
 
-    // setOriMovies: (state: any, action: any) => {
+    filterItems: (state: any, action: any) => {
+      state.filter = action.payload;
+    },
 
-    // },
-
-    searchMovie: (state, action) => {
-      const searchedMovie = action.payload.toLowerCase();
-      if (searchedMovie === "") {
-        state.movies = state.oriMovies;
-      } else {
-        const newMovie = state.movies.filter((movie) => {
-          const movieTitle = movie.title.toLowerCase();
-          return movieTitle.includes(searchedMovie);
-        });
-        state.movies = newMovie;
-      }
+    setPage: (state: any, action: any) => {
+      state.page += 1;
     },
   },
 });
 
 export default MovieSlice.reducer;
-export const { setMovies, delItems, searchMovie } = MovieSlice.actions;
+export const { setMovies, delItems, filterItems, setPage } = MovieSlice.actions;
