@@ -5,15 +5,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { setMovies } from "../MovieSlice";
 import { Movie } from "../interface/global.interface";
 import FilterByCategory from "@/components/FilterByCategory";
-import { setPage } from "../MovieSlice";
+import Genre from "@/components/Genre";
+import { getData, searchData, getGenreData } from "@/services/axios.service";
 
 export default function Home() {
   const [query, setQuery] = useState<string>("");
   const { movies, oriMovies } = useSelector((state: any) => state.AllMovies);
-  const { filter, page } = useSelector((state: any) => state.AllMovies);
+  const [genres, setGenres] = useState<object[]>([]);
+  const [filter, setFilter] = useState<string>("");
+  const [page, setPage] = useState<number>(1);
 
   const dispatch = useDispatch();
 
+  //******fetch data in the page first load */
   const fetchMovies = async () => {
     try {
       const response = await axios.get(
@@ -26,6 +30,7 @@ export default function Home() {
   useEffect(() => {
     fetchMovies();
   }, []);
+  //*********fetch data end */
 
   //********local state way */
   // const searchResult = (query: any) => {
@@ -36,16 +41,12 @@ export default function Home() {
   //   dispatch(filterSearchMovie(filteredmovies));
   // };
 
+  //****************get search result based on change in query */
+
   const searchResult = async () => {
     if (query && query !== "") {
-      const response = await axios.get(
-        `https://api.themoviedb.org/3/search/movie?query=${query}`,
-        {
-          headers: {
-            Authorization:
-              "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjODdjZGJhOGY2Yjc0YjgyOTEwYzFhZDU2ZTljOTNjNCIsInN1YiI6IjY0NzU5NTljOTI0Y2U2MDBmOTc2MmU0YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GFY8SaJ0_ZZFVmSrA5qsEcjSC9vJ_3QUJxHab-B-jqQ ",
-          },
-        }
+      const response = await searchData(
+        `api_key=c87cdba8f6b74b82910c1ad56e9c93c4&query=${query}`
       );
       dispatch(setMovies(response.data.results));
     } else {
@@ -59,27 +60,49 @@ export default function Home() {
     }, 500);
     return () => clearTimeout(debounceFN);
   }, [query]);
+  //************************************************************ */
 
-  const searchByGenre = async () => {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=${filter}`,
-      {
-        headers: {
-          Authorization:
-            "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJjODdjZGJhOGY2Yjc0YjgyOTEwYzFhZDU2ZTljOTNjNCIsInN1YiI6IjY0NzU5NTljOTI0Y2U2MDBmOTc2MmU0YSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.GFY8SaJ0_ZZFVmSrA5qsEcjSC9vJ_3QUJxHab-B-jqQ",
-        },
-      }
-    );
-    dispatch(setMovies(response.data.results));
+  //************************************************************* */
+  const searchByCategory = async () => {
+    if (filter && filter != "") {
+      const response = await getData(
+        `include_adult=false&include_video=false&language=en-US&page=${page}&sort_by=${filter}`
+      );
+      dispatch(setMovies(response.data.results));
+    }
   };
 
   useEffect(() => {
-    searchByGenre();
+    searchByCategory();
   }, [filter, page]);
+  // *******************************************************************
+
+  // **********************************************************************
+  const getGenre = async () => {
+    const response = await getGenreData();
+    setGenres(response.data.genres);
+  };
+
+  useEffect(() => {
+    getGenre();
+  }, []);
+  // ****************************************************************************
 
   const handleLoad = (e: any) => {
     e.preventDefault();
-    dispatch(setPage());
+    setPage(page + 1);
+  };
+
+  const handleFilterChange = (e: any) => {
+    e.preventDefault();
+    setFilter(e.target.value);
+  };
+
+  const handleGenreChange = (e: any, result: any) => {
+    e.preventDefault();
+    getData(`with_genres=${result}`).then((resp) =>
+      setMovies(resp.data.results)
+    );
   };
 
   return (
@@ -88,7 +111,11 @@ export default function Home() {
         <h1 className="font-bold mb-4 text-2xl text-center">Popular Movies</h1>
         <div className="w-full  flex  space-x-12 items-end">
           <div>
-            <FilterByCategory />
+            <FilterByCategory
+              filter={filter}
+              handleFilterChange={handleFilterChange}
+            />
+            <Genre genres={genres} handleGenreChange={handleGenreChange} />
           </div>
 
           <input

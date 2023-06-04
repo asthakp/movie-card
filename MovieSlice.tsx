@@ -23,16 +23,8 @@ const MovieSlice: any = createSlice({
       });
       state.movies = filteredmovies;
     },
-
-    filterItems: (state: any, action: any) => {
-      state.filter = action.payload;
-    },
-
-    setPage: (state: any, action: any) => {
-      state.page += 1;
-    },
   },
 });
 
 export default MovieSlice.reducer;
-export const { setMovies, delItems, filterItems, setPage } = MovieSlice.actions;
+export const { setMovies, delItems } = MovieSlice.actions;
