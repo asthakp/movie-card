@@ -139,7 +139,7 @@ export default function Home() {
                 poster={
                   movie.poster_path
                     ? "https://image.tmdb.org/t/p/w500" + movie.poster_path
-                    : ""
+                    : "https://t4.ftcdn.net/jpg/04/99/93/31/360_F_499933117_ZAUBfv3P1HEOsZDrnkbNCt4jc3AodArl.jpg"
                 }
               />
             );

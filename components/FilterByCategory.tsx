@@ -15,9 +15,9 @@ const FilterByCategory = ({ filter, handleFilterChange }: any) => {
         <option value="primary_release_date.desc">
           primary_release_date.desc
         </option>
-        <option value="popularity.desc">popularity.desc</option>
+        <option value="popularity.asc">popularity.asc</option>
         <option value="vote_average.desc">vote_average.desc</option>
-        <option value="revenue.desc">revenue.desc</option>
+        <option value="revenue.asc">revenue.asc</option>
         <option value="vote_count.desc">vote_count.desc</option>
       </select>
     </>
